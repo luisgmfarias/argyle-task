@@ -4,7 +4,7 @@ import json
 
 
 class Login:
-    """ This class implements the login"""
+    """This class implements the login"""
 
     start_url = "https://www.upwork.com/ab/account-security/login"
     driver = Driver().init_driver()

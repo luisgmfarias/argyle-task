@@ -11,7 +11,7 @@ class MainPage():
 
     def setup(self):
 
-        if not self.entry.isLogged:
+        if not self.entry.isLogged():
             self.entry.login()
 
     def get_portal_works(self):
