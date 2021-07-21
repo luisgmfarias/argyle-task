@@ -1,11 +1,11 @@
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 import requests
 
 
 class Driver:
 
-    def init_driver(self):
-        return webdriver.ChromeDriver('chromedriver')
-
-    def current_url(self, driver):
-        return requests.get(driver.get_current_url())
+    def driver(self):
+        firefox_options = FirefoxOptions()
+        firefox_options.add_argument("--headless")
+        return webdriver.Firefox(executable_path='/home/luis-farias/Documents/argyle-task/scraper/geckodriver')

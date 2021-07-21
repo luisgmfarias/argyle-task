@@ -1,27 +1,70 @@
-from scraper.login import Login
 from bs4 import BeautifulSoup
-from scraper.driver import Driver
+from scraper.navigation import Navigation
+import pandas as pd
 
 
-class MainPage():
-    """ This class implements a scraping routine through main page"""
+class Scraping:
+    """This class implements reading data from html"""
 
-    entry = Login()
-    driver = Driver()
+    navigation = Navigation()
+    navigation.login()
 
-    def setup(self):
+    def main_portal_reader(self):
+        soup = BeautifulSoup(self.navigation.get_main_portal(), 'lxml')
+        job_feed = soup.find('div', {'id': 'feed-jobs'})
 
-        if not self.entry.isLogged():
-            self.entry.login()
+        title = []
+        url = []
+        description = []
+        location = []
+        tags = []
+        client_spendings = []
+        payment_status = []
+        rating = []
 
-    def get_portal_works(self):
+        for sec in job_feed.findAll('section'):
+            title.append(sec.find(
+                'a', {'class': 'job-title-link'}).getText())
 
-        bs = BeautifulSoup(self.driver.current_url)
-        feed_jobs = bs.find({'id': 'feed-jobs'})
-        for section in feed_jobs.findAll('section'):
-            work_title = section.find({'class': 'job-title-link'}).getText()
-            work_url = section.find({'class': 'job-title-link'})['href']
+            url.append(
+                f"https://upwork.com{sec.find('a', {'class': 'job-title-link'})['href']}")
 
+            description_div = sec.find('div', {'class': 'description'})
 
-class ProfilePage():
-    """ This class implements a scraping routine through Profile page"""
+            description.append(description_div.find('div',
+                                                    {'data-eo-truncation-html-unsafe':
+                                                     '::jsuJobDescriptionController.job.description'}
+                                                    ).find('span', {'class': 'ng-hide'}).getText())
+            tags.append([tag.find('span').getText() for tag in description_div.findAll(
+                'a', {'class': 'o-tag-skill'})])
+
+            location.append(sec.find(
+                'strong', {'class': 'client-location'}).getText())
+
+            client_spendings.append(sec.find(
+                'span', {'class': 'client-spendings'}).getText())
+
+            payment_status.append(sec.find(
+                'span', {'class': 'payment-status'}).find('strong').getText())
+
+            rating.append(sec.find(
+                'span', {'data-rating-define': 'star'})['data-eo-popover-html-unsafe'])
+
+        return title, url, description, tags, location, client_spendings, payment_status, rating
+
+    def get_data_df(self):
+
+        title, url, description, tags, location, client_spendings, payment_status, rating = self.main_portal_reader()
+
+        works = {
+            'title': title,
+            'url': url,
+            'description': description,
+            'tags': tags,
+            'location': location,
+            'client_spendings': client_spendings,
+            'payment_status': payment_status,
+            'rating': rating
+        }
+
+        df = pd.DataFrame(works, columns=works.keys())

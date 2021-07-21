@@ -3,11 +3,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-#vscode
+# vscode
 .vscode/
 
-#login-config.json
+# login-config.json
 .login.json
+
+# geckodriver log
+geckodriver.log
 
 # C extensions
 *.so
