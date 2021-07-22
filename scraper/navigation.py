@@ -6,9 +6,11 @@ from time import sleep
 class Navigation:
     """This class implements all Navigation through the site"""
 
-    login_url = "https://www.upwork.com/ab/account-security/login"
-    driver = Driver().driver()
-    landing_url = "https://www.upwork.com/ab/find-work/domestic"
+    def __init__(self):
+
+        self.login_url = "https://www.upwork.com/ab/account-security/login"
+        self.driver = Driver().driver()
+        self.landing_url = "https://www.upwork.com/ab/find-work/domestic"
 
     def login(self):
 
@@ -19,6 +21,8 @@ class Navigation:
                 data = json.load(json_file)
 
             try:
+                sleep(2)
+
                 self.driver.find_element_by_id(
                     "login_username"
                 ).send_keys(data['login'])
@@ -60,18 +64,22 @@ class Navigation:
 
         return self.driver.page_source
 
-    def get_profile_content(self):
+    def get_xhr(self, url):
 
-        profile_path = self.driver.find_element_by_xpath(
-            """/html/body/div[2]/div/div[2]/div/div[7]/div[3]/div/fe-profile-completeness/div/div[2]/a"""
-        ).get_attribute("href")
+        self.driver.get(f'view-source:{url}')
 
-        profile_html = self.get_html(url=profile_path)
+        obj = json.loads(self.driver.find_element_by_tag_name('pre').text)
 
-        return profile_html
+        return obj
 
     def get_main_portal(self):
 
         entry_portal_html = self.get_html(url=self.landing_url)
 
         return entry_portal_html
+
+
+
+
+
+

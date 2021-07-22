@@ -6,6 +6,9 @@ __pycache__/
 # vscode
 .vscode/
 
+# clean output files
+output/*.json
+
 # login-config.json
 .login.json
 

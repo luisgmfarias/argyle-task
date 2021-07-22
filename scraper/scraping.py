@@ -1,6 +1,12 @@
 from bs4 import BeautifulSoup
 from scraper.navigation import Navigation
 import pandas as pd
+import json
+from time import time
+from typing import Optional, List
+from models.profile import Profile
+from models.work import Work
+from pydantic import parse_obj_as
 
 
 class Scraping:
@@ -21,6 +27,9 @@ class Scraping:
         client_spendings = []
         payment_status = []
         rating = []
+        job_type = []
+        tier = []
+        date = []
 
         for sec in job_feed.findAll('section'):
             title.append(sec.find(
@@ -50,11 +59,19 @@ class Scraping:
             rating.append(sec.find(
                 'span', {'data-rating-define': 'star'})['data-eo-popover-html-unsafe'])
 
-        return title, url, description, tags, location, client_spendings, payment_status, rating
+            job_type.append(sec.find('strong', {'class': 'js-type'}).getText())
+
+            tier.append(
+                sec.find('span', {'class': 'js-contractor-tier'}).getText())
+
+            date.append(
+                sec.find('span', {'class': 'js-posted'}).find('time')['datetime'])
+
+        return title, url, description, tags, location, client_spendings, payment_status, rating, job_type, tier, date
 
     def get_data_df(self):
 
-        title, url, description, tags, location, client_spendings, payment_status, rating = self.main_portal_reader()
+        title, url, description, tags, location, client_spendings, payment_status, rating, job_type, tier, date = self.main_portal_reader()
 
         works = {
             'title': title,
@@ -64,7 +81,79 @@ class Scraping:
             'location': location,
             'client_spendings': client_spendings,
             'payment_status': payment_status,
-            'rating': rating
+            'rating': rating,
+            'job_type': job_type,
+            'tier': tier,
+            'date': date
         }
 
-        df = pd.DataFrame(works, columns=works.keys())
+        return pd.DataFrame(works, columns=works.keys())
+
+    def save_to_json(self, obj, path: str):
+
+        _, userId = self.get_profile_ids()
+
+        file = f"/home/luis-farias/Documents/argyle-task/output/{userId}-{path}-{int(time())}.json"
+
+        with open(file, 'w') as json_file:
+            json.dump(obj, json_file, default=str)
+
+    def get_profile_ids(self):
+        profile_info = self.navigation.get_xhr(
+            'https://www.upwork.com/freelancers/api/v1/profile/me/fwh')
+        cipherId = profile_info['identity']['ciphertext']
+        userId = profile_info['identity']['userId']
+
+        return cipherId, userId
+
+    def get_profile_obj(self):
+        cipherId, _ = self.get_profile_ids()
+
+        url_api_profile = f'https://www.upwork.com/freelancers/api/v1/freelancer/profile/{cipherId}/details?viewMode=1'
+
+        profile_obj = self.navigation.get_xhr(url=url_api_profile)['profile']
+
+        return profile_obj
+
+    def get_full_profile_content(self):
+
+        profile_obj = self.get_profile_obj()
+
+        self.save_to_json(profile_obj, path='full-profile')
+
+    def get_portal_content(self):
+
+        df = self.get_data_df()
+
+        portal_objs = json.loads(df.to_json(orient="records"))
+
+        works = parse_obj_as(List[Work], portal_objs)
+
+        self.save_to_json(works, path='jobfeed')
+
+    def get_profile_content(self):
+
+        profile_obj = self.get_profile_obj()
+        _, userId = self.get_profile_ids()
+
+        address_data = {
+            'city': profile_obj['profile']['location']['city'],
+            'state': profile_obj['profile']['location']['state'],
+            'country': profile_obj['profile']['location']['country']
+        }
+
+        profile_data = {
+            'id': profile_obj['identity']['uid'],
+            'account': userId,
+            'employer': profile_obj['employmentHistory'][0]['companyName'],
+            'created_at': profile_obj['stats']['memberSince'],
+            'full_name': profile_obj['profile']['name'],
+            'email': '',  # selenium interaction
+            'phone_number': 10,  # selenium interaction
+            'picture_url': profile_obj['profile']['portrait']['portrait'],
+            'address': address_data,
+        }
+
+        profile = Profile(**profile_data)
+
+        self.save_to_json(profile.dict(), path='profile')

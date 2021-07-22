@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-import requests
 
 
 class Driver:
