@@ -24,7 +24,7 @@ Rename _.login-sample.json_ to _.login.json_, then fill all necessary(login, pas
 Using pip:
 
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 or, using poetry to manage dependencies:
