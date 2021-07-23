@@ -40,6 +40,14 @@ poetry install --no-interaction
 gunicorn --reload --log-level debug --timeout 100 wsgi:app
 ```
 
+**GET**:
+
+**/profile** - to get profile information
+
+**/full_profile** - to get full profile information
+
+**/works** - to get works information
+
 ## Usage
 
 By the way, it's not necessary to setup an API. It's possible to generate a json output for those scraping methods:
