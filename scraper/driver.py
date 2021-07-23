@@ -32,7 +32,7 @@ class Driver:
         options.add_argument(f'user-agent={user_agent}')
 
         driver = webdriver.Chrome(
-            executable_path='/home/luis-farias/Documents/argyle-task/scraper/chromedriver', chrome_options=options)
+            executable_path='scraper/chromedriver', chrome_options=options)
 
         driver.execute_script(
             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")

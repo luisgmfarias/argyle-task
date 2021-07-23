@@ -93,7 +93,7 @@ class Scraping:
 
         _, userId = self.get_profile_ids()
 
-        file = f"/home/luis-farias/Documents/argyle-task/output/{userId}-{path}-{int(time())}.json"
+        file = f"output/{userId}-{path}-{int(time())}.json"
 
         with open(file, 'w') as json_file:
             json.dump(obj, json_file, default=str)
