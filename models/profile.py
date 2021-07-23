@@ -18,13 +18,13 @@ class Profile(BaseModel):
     employer: str
     created_at: datetime
     updated_at: Optional[datetime]
-    first_name: Optional[str]
-    last_name: Optional[str]
+    first_name: str
+    last_name: str
     full_name: str
     email: str
     phone_number: int
     birth_date: Optional[datetime]
-    picture_url: Optional[str]
+    picture_url: str
     address: Address
     ssn: Optional[int]
     marital_status: Optional[str]

@@ -111,13 +111,13 @@ class Scraping:
 
         url_api_profile = f'https://www.upwork.com/freelancers/api/v1/freelancer/profile/{cipherId}/details?viewMode=1'
 
-        profile_obj = self.navigation.get_xhr(url=url_api_profile)['profile']
+        profile_obj = self.navigation.get_xhr(url=url_api_profile)
 
         return profile_obj
 
     def get_full_profile_content(self):
 
-        profile_obj = self.get_profile_obj()
+        profile_obj = self.get_profile_obj()['profile']
 
         self.save_to_json(profile_obj, path='full-profile')
 
@@ -131,26 +131,38 @@ class Scraping:
 
         self.save_to_json(works, path='jobfeed')
 
+    def get_profile_contact_info(self):
+
+        contact_obj = self.navigation.get_xhr(
+            'https: // www.upwork.com/freelancers/settings/api/v1/contactInfo')
+
+        return contact_obj
+
     def get_profile_content(self):
 
         profile_obj = self.get_profile_obj()
-        _, userId = self.get_profile_ids()
+        contact_obj = self.get_profile_contact_info()
 
         address_data = {
-            'city': profile_obj['profile']['location']['city'],
-            'state': profile_obj['profile']['location']['state'],
-            'country': profile_obj['profile']['location']['country']
+            'line1': contact_obj['freelancer']['address']['street'],
+            'line2': contact_obj['freelancer']['address']['additionalInfo'],
+            'city': contact_obj['freelancer']['address']['city'],
+            'state': contact_obj['freelancer']['address']['state'],
+            'postal_code': contact_obj['freelancer']['address']['zip'],
+            'country': contact_obj['freelancer']['address']['country']
         }
 
         profile_data = {
-            'id': profile_obj['identity']['uid'],
-            'account': userId,
-            'employer': profile_obj['employmentHistory'][0]['companyName'],
-            'created_at': profile_obj['stats']['memberSince'],
-            'full_name': profile_obj['profile']['name'],
-            'email': '',  # selenium interaction
-            'phone_number': 10,  # selenium interaction
-            'picture_url': profile_obj['profile']['portrait']['portrait'],
+            'id': profile_obj['profile']['identity']['uid'],
+            'account': contact_obj['freelancer']['nid'],
+            'employer': profile_obj['profile']['employmentHistory'][0]['companyName'],
+            'created_at': profile_obj['profile']['stats']['memberSince'],
+            'first_name': contact_obj['freelancer']['firstName'],
+            'last_name': contact_obj['freelancer']['lastName'],
+            'full_name': profile_obj['profile']['profile']['name'],
+            'email': contact_obj['freelancer']['email']['address'],
+            'phone_number': contact_obj['freelancer']['phone'],
+            'picture_url': profile_obj['profile']['profile']['portrait']['portrait'],
             'address': address_data,
         }
 

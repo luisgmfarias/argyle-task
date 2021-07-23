@@ -7,4 +7,4 @@ class Driver:
     def driver(self):
         firefox_options = FirefoxOptions()
         firefox_options.add_argument("--headless")
-        return webdriver.Firefox(executable_path='/home/luis-farias/Documents/argyle-task/scraper/geckodriver')
+        return webdriver.Chrome(executable_path='/home/luis-farias/Documents/argyle-task/scraper/chromedriver')

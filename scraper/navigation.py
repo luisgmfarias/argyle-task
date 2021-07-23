@@ -1,6 +1,7 @@
 from scraper.driver import Driver
 import json
 from time import sleep
+import random
 
 
 class Navigation:
@@ -11,6 +12,10 @@ class Navigation:
         self.login_url = "https://www.upwork.com/ab/account-security/login"
         self.driver = Driver().driver()
         self.landing_url = "https://www.upwork.com/ab/find-work/domestic"
+        self.contact_info_url = "https://www.upwork.com/freelancers/settings/contactInfo"
+
+    def delay():
+        sleep(random.randint(3, 5))
 
     def login(self):
 
@@ -21,24 +26,24 @@ class Navigation:
                 data = json.load(json_file)
 
             try:
-                sleep(2)
+                self.delay()
 
                 self.driver.find_element_by_id(
                     "login_username"
                 ).send_keys(data['login'])
 
-                sleep(2)
+                self.delay()
 
                 self.driver.find_element_by_xpath(
                     """//*[@button-role="continue"]"""
                 ).click()
 
-                sleep(2)
+                self.delay()
                 self.driver.find_element_by_id(
                     "login_password"
                 ).send_keys(data['password'])
 
-                sleep(2)
+                self.delay()
                 self.driver.find_element_by_xpath(
                     """//*[@button-role="continue"]"""
                 ).click()
@@ -78,8 +83,24 @@ class Navigation:
 
         return entry_portal_html
 
+    def bypass_captcha(self):
 
+        # opening bypass iframe
+        externalChallenge = self.driver.find_element_by_id('externalChallenge')
+        self.driver.switch_to.frame(externalChallenge)
+        captcha_frame = self.driver.find_elements_by_tag_name('iframe')[0]
+        self.driver.switch_to.frame(captcha_frame)
+        self.driver.find_element_by_class_name(
+            'recaptcha-checkbox-border').click()
 
+        self.delay()
 
+        # clicking on sound recaptcha button
+        self.driver.switch_to.default_content()
+        self.driver.switch_to.frame(externalChallenge)
+        captcha_challenge = self.driver.find_element_by_xpath(
+            "//iframe[@title='recaptcha challenge']")
+        self.driver.switch_to.frame(captcha_challenge)
+        self.driver.find_element_by_id('recaptcha-audio-button').click()
 
-
+        self.delay()
