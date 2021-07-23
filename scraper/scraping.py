@@ -8,7 +8,6 @@ from models.profile import Profile
 from models.work import Work
 from pydantic import parse_obj_as
 import os
-import logging
 
 
 class Scraping:

@@ -2,7 +2,6 @@ from scraper.driver import Driver
 import json
 from time import sleep
 import random
-import logging
 
 
 class Navigation:
