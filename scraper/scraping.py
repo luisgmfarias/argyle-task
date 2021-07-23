@@ -7,6 +7,7 @@ from typing import Optional, List
 from models.profile import Profile
 from models.work import Work
 from pydantic import parse_obj_as
+import os
 
 
 class Scraping:
@@ -94,6 +95,8 @@ class Scraping:
         _, userId = self.get_profile_ids()
 
         file = f"output/{userId}-{path}-{int(time())}.json"
+
+        os.makedirs(os.path.dirname(file), exist_ok=True)
 
         with open(file, 'w') as json_file:
             json.dump(obj, json_file, default=str)
