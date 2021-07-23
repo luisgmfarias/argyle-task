@@ -2,6 +2,7 @@ from scraper.driver import Driver
 import json
 from time import sleep
 import random
+import logging
 
 
 class Navigation:
@@ -51,6 +52,8 @@ class Navigation:
                     self.driver.find_element_by_xpath(
                         """//*[@button-role="continue"]"""
                     ).click()
+
+                    print('Account Logged')
 
                     break
 

@@ -18,9 +18,9 @@ class Driver:
 
         user_agent = user_agent_randomizer.get_random_user_agent()
 
-        # blocked preventions from selenium
+        # being blocked prevention arguments
         options = Options()
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument("--window-size=1420,1080")
         options.add_argument("--disable-gpu")

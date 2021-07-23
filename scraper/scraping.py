@@ -8,6 +8,7 @@ from models.profile import Profile
 from models.work import Work
 from pydantic import parse_obj_as
 import os
+import logging
 
 
 class Scraping:
@@ -15,6 +16,8 @@ class Scraping:
 
     navigation = Navigation()
     navigation.login()
+
+    print('API is Ready')
 
     def main_portal_reader(self):
         soup = BeautifulSoup(self.navigation.get_main_portal(), 'lxml')
@@ -100,6 +103,8 @@ class Scraping:
 
         with open(file, 'w') as json_file:
             json.dump(obj, json_file, default=str)
+
+        print(f'{str} saved to output file')
 
     def get_profile_ids(self):
         profile_info = self.navigation.get_xhr(
