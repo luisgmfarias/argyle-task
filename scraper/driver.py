@@ -6,6 +6,7 @@ from random_user_agent.params import SoftwareName, OperatingSystem
 
 
 class Driver:
+    """ This class is managing the driver"""
 
     def driver(self):
 

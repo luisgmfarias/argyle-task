@@ -19,37 +19,47 @@ class Navigation:
 
     def login(self):
 
-        self.driver.get(self.login_url)
-
         if not self.isLogged():
-            with open('.login.json') as json_file:
-                data = json.load(json_file)
 
-            try:
-                self.delay()
+            # 3 attempts to login
+            for _ in range(3):
 
-                self.driver.find_element_by_id(
-                    "login_username"
-                ).send_keys(data['login'])
+                self.driver.get(self.login_url)
 
-                self.delay()
+                with open('.login.json') as json_file:
+                    data = json.load(json_file)
 
-                self.driver.find_element_by_xpath(
-                    """//*[@button-role="continue"]"""
-                ).click()
+                try:
+                    self.delay()
 
-                self.delay()
-                self.driver.find_element_by_id(
-                    "login_password"
-                ).send_keys(data['password'])
+                    self.driver.find_element_by_id(
+                        "login_username"
+                    ).send_keys(data['login'])
 
-                self.delay()
-                self.driver.find_element_by_xpath(
-                    """//*[@button-role="continue"]"""
-                ).click()
+                    self.delay()
 
-            except Exception as e:
-                raise e
+                    self.driver.find_element_by_xpath(
+                        """//*[@button-role="continue"]"""
+                    ).click()
+
+                    self.delay()
+                    self.driver.find_element_by_id(
+                        "login_password"
+                    ).send_keys(data['password'])
+
+                    self.delay()
+                    self.driver.find_element_by_xpath(
+                        """//*[@button-role="continue"]"""
+                    ).click()
+
+                    break
+
+                except Exception as e:
+                    print(e)
+                    continue
+
+        else:
+            pass
 
     def isLogged(self):
 
