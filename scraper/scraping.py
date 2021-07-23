@@ -121,6 +121,8 @@ class Scraping:
 
         self.save_to_json(profile_obj, path='full-profile')
 
+        return profile_obj
+
     def get_portal_content(self):
 
         df = self.get_data_df()
@@ -129,12 +131,16 @@ class Scraping:
 
         works = parse_obj_as(List[Work], portal_objs)
 
-        self.save_to_json(works, path='jobfeed')
+        works_obj = {'works': [work.dict() for work in works]}
+
+        self.save_to_json(works_obj, path='jobfeed')
+
+        return works_obj
 
     def get_profile_contact_info(self):
 
         contact_obj = self.navigation.get_xhr(
-            'https: // www.upwork.com/freelancers/settings/api/v1/contactInfo')
+            'https://www.upwork.com/freelancers/settings/api/v1/contactInfo')
 
         return contact_obj
 

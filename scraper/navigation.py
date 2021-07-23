@@ -71,7 +71,7 @@ class Navigation:
 
     def get_xhr(self, url):
 
-        self.driver.get(f'view-source:{url}')
+        self.driver.get(f'{url}')
 
         obj = json.loads(self.driver.find_element_by_tag_name('pre').text)
 
