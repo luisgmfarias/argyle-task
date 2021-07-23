@@ -169,3 +169,5 @@ class Scraping:
         profile = Profile(**profile_data)
 
         self.save_to_json(profile.dict(), path='profile')
+
+        return profile.dict()
