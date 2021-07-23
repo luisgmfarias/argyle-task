@@ -1,6 +1,6 @@
 # Argyle Upwork Scanner
 
-This is a development task for Argyle Scan Engineer
+This is a [development task](https://www.notion.so/Argyle-Scanning-Task-Programming-71f79b9deda041bf84db0e0e4bcfc2af) for Argyle Scan Engineer
 
 ## Setup
 
@@ -48,7 +48,7 @@ By the way, it's not necessary to setup an API. It's possible to generate a json
 2. **works**: `Scraping().get_portal_content()`
 3. **full_profile**: `Scraping().get_full_profile_content()`. Extra method that show more profile details.
 
-All methods will save a individual json file at **ouput** path.
+All methods saves a individual json file at **output** path.
 
 ## Models
 
@@ -114,9 +114,7 @@ Run `pytest` to follow up its application unit test coverage.
 
 ### **Luís Guilherme Medeiros de Farias**
 
-**Software Engineer.**
-
-**Paraná, Brazil**
+**Paraná, Brazil. Software Engineer**
 
 Email: luisgmfarias@gmail.com
 
