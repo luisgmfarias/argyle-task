@@ -118,4 +118,4 @@ Run `pytest` to follow up its application unit test coverage.
 
 Email: luisgmfarias@gmail.com
 
-Portfolio: luisgmfarias.github.io
+Portfolio: [luisgmfarias.github.io](https://luisgmfarias.github.io)
